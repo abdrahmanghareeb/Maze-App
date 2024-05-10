@@ -97,12 +97,25 @@ Widget defaultField(
 //     ),
 //   );
 // }
-Widget matrix_builder({required List<List<int>> maze, required context}) {
-  var cubit = MazeCubit.get(context);
+
+Widget matrix_builder({required List<List<int>> maze, required context ,required startCol ,
+  required endCol, required endRow , required startRow, required String selectedMode
+}) {
+  //iterate on the whole maze turn all the 7s and 10s to 0
+  for (int i = 0; i < maze.length; i++) {
+    for (int j = 0; j < maze[i].length; j++) {
+      if (maze[i][j] == 7 || maze[i][j] == 10) {
+        maze[i][j] = 0;
+      }
+    }
+  }
+  //set the new start and end
+  maze[startRow][startCol] = 7;
+  maze[endRow][endCol] = 10;
   return Expanded(
     child: Stack(
       children: [
-        Container(color: Colors.black12),
+        Container(color: Colors.brown),
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: GridView.builder(
@@ -116,9 +129,15 @@ Widget matrix_builder({required List<List<int>> maze, required context}) {
               var cubit = MazeCubit.get(context);
               return InkWell(
                   onTap: () {
-                    maze[row][col] = maze[row][col] == 1 ?  0 : 1 ;
-                    cubit.changeOnCellClick();
-                    print(maze.toString());
+                    if(selectedMode == "Creation Mode") {
+                      if (maze[row][col] == 1) {
+                        maze[row][col] = 0;
+                      } else if (maze[row][col] == 0) {
+                        maze[row][col] = 1;
+                      }
+                      cubit.changeOnCellClick();
+                      print(maze.toString());
+                    }
                   },
                   child: _buildCell(value: maze[row][col]));
             },
