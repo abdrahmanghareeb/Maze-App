@@ -16,3 +16,4 @@ final class EndCellColumnState extends MazeState {}
 final class StartCellRowState extends MazeState {}
 final class EndCellRowState extends MazeState {}
 final class OnCellClickState extends MazeState {}
+final class CellToggledState extends MazeState {}

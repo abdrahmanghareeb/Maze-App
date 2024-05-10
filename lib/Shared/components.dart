@@ -1,30 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Cubit/maze_cubit.dart';
 
-Widget _buildCell(int value) {
+Widget _buildCell({required int value}) {
   // assign 0 -> space , 1 => border ,7 => start , 10 => end
   Color color = Colors.white;
-  set_color_for_the_cell(color: color , value: value);
+  if (value == 1) {
+    color = Colors.black;
+  } else if (value == 0) {
+    color = Colors.white;
+  } else if (value == 7) {
+    color = Colors.blueAccent;
+  } else if (value == 10) {
+    color = Colors.red;
+  }
   return Container(
     margin: EdgeInsets.all(1),
     color: color,
   );
 }
 
-void set_color_for_the_cell({value, color}){
-  if(value == 1) {
-    color =  Colors.black;
-  } else if (value==0) {
-    color = Colors.white;
-  } else if(value == 7) {
-    color = Colors.blueAccent;
-  } else if (value == 10) {
-    color = Colors.red;
-  }
-}
-
 Widget algorithmDropdown(
-    {required ValueChanged function, required selectedItem, required List<String> list}) {
+    {required ValueChanged function,
+    required selectedItem,
+    required List<String> list}) {
   return Expanded(
     child: DropdownButton<String>(
       value: selectedItem,
@@ -42,68 +41,90 @@ Widget algorithmDropdown(
 }
 
 Widget defaultField(
-    {required ValueChanged function, required String text, required TextEditingController controllers }) {
+    {required ValueChanged function,
+    required String text,
+    required TextEditingController controllers}) {
   return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextFormField(
-          controller: controllers,
-          keyboardType: TextInputType.number,
-          onChanged: function,
-          decoration: InputDecoration(hintText: "$text"),
-        ),
-      ));
+    padding: const EdgeInsets.all(8.0),
+    child: TextFormField(
+      controller: controllers,
+      keyboardType: TextInputType.number,
+      onChanged: function,
+      decoration: InputDecoration(hintText: "$text"),
+    ),
+  ));
 }
 
-
-Widget matrix_builder({required List<List<int>> maze , required context, required selectedMode , required startCol ,
-  required startRow ,  required endCol , required endRow ,
-}) {
+// Widget matrix_builder({required List<List<int>> maze, required context}) {
+//   var cubit = MazeCubit.get(context);
+//   return Expanded(
+//     child: GestureDetector(
+//       onTapUp: (details) {
+//         // Calculate the tapped cell
+//         double cellWidth = MediaQuery.of(context).size.width / maze[0].length;
+//         double cellHeight =
+//             (MediaQuery.of(context).size.height - 120) / maze.length;
+//
+//         // Calculate column index based on tap position
+//         int col = (details.localPosition.dx / cellWidth).floor();
+//
+//         // Calculate row index based on tap position
+//         int row = (details.localPosition.dy / cellHeight).floor();
+//
+//         // Toggle the cell color (0 -> 1, 1 -> 0)
+//         cubit.toggleCell(row, col);
+//       },
+//       child: Stack(
+//         children: [
+//           Container(color: Colors.black12),
+//           Padding(
+//             padding: const EdgeInsets.all(20.0),
+//             child: GridView.builder(
+//               itemCount: maze.length * maze[0].length,
+//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                 crossAxisCount: maze[0].length,
+//               ),
+//               itemBuilder: (BuildContext context, int index) {
+//                 int row = index ~/ maze[0].length;
+//                 int col = index % maze[0].length;
+//                 return _buildCell(value: maze[row][col]);
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
+Widget matrix_builder({required List<List<int>> maze, required context}) {
+  var cubit = MazeCubit.get(context);
   return Expanded(
-    child: GestureDetector(
-      onTapUp: (details) {
-        // Calculate the tapped cell
-        double cellWidth = MediaQuery.of(context).size.width / maze[0].length;
-        double cellHeight = (MediaQuery.of(context).size.height - 120) / maze.length;
-        int row = (details.localPosition.dy / cellHeight).floor();
-        int col = (details.localPosition.dx / cellWidth).floor();
-
-        // Update maze based on selected mode
-          if (selectedMode == "Creation Mode" ) {
-            if (maze[row][col] == 0 || row != startRow  || col != startCol || row != endRow  || col != endCol) {
-              maze[row][col] = 1; // Set barrier
-              print(maze.toString());
-            } else  if (maze[row][col] == 1 || row != startRow  || col != startCol || row != endRow  || col != endCol) {
-              maze[row][col] = 0; // Set space
-              print(maze.toString());
-            }else  if (row == startRow  || col == startCol || row != endRow  || col != endCol) {
-              maze[row][col] = 7; //  // set to start by number 7
-              print(maze.toString());
-            }else  if (row != startRow  || col != startCol || row == endRow  || col == endCol) {
-              maze[row][col] = 10; //  // set to start by number 10
-              print(maze.toString());
-            }
-          }
-      },
-      child: Stack(
-        children: [
-          Container(color: Colors.black12),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: GridView.builder(
-              itemCount: maze.length * maze[0].length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: maze[0].length,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                int row = index ~/ maze[0].length;
-                int col = index % maze[0].length;
-                return _buildCell(maze[row][col]);
-              },
+    child: Stack(
+      children: [
+        Container(color: Colors.black12),
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: GridView.builder(
+            itemCount: maze.length * maze[0].length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: maze[0].length,
             ),
+            itemBuilder: (BuildContext context, int index) {
+              int row = index ~/ maze[0].length;
+              int col = index % maze[0].length;
+              var cubit = MazeCubit.get(context);
+              return InkWell(
+                  onTap: () {
+                    maze[row][col] = maze[row][col] == 1 ?  0 : 1 ;
+                    cubit.changeOnCellClick();
+                    print(maze.toString());
+                  },
+                  child: _buildCell(value: maze[row][col]));
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
