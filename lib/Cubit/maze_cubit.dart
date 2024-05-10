@@ -1,4 +1,3 @@
-import 'package:ai_maze_project/Home%20layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,12 +22,13 @@ class MazeCubit extends Cubit<MazeState> {
   var endRowControllers = TextEditingController();
   var endColumnControllers = TextEditingController();
   var startRow;
-
+  var SR;
   var startColumn;
-
+  var SC;
   var endRow;
-
+  var ER;
   var endColumn;
+  var EC;
 
   //to transform the controllers to int
   int? x;
@@ -37,9 +37,9 @@ class MazeCubit extends Cubit<MazeState> {
 
   var maze;
 
-  // will carry the coordinates of start cell ( row , column ) => ( y, x )
-  List<int> start = [0, 0]; // Initialize start point
-  List<int> end = [4, 4];
+  // // will carry the coordinates of start cell ( row , column ) => ( y, x )
+  // List<int> start = [0, 0]; // Initialize start point
+  // List<int> end = [4, 4];
 
   void intializeTheMaze() {
     maze = List.generate(6, (index) => List.filled(6, 0));
@@ -47,8 +47,10 @@ class MazeCubit extends Cubit<MazeState> {
     selectedMode = modeList.first;
     startRow = 0;
     startColumn = 0;
-    endRow = maze.length;
-    endColumn = maze[0].length;
+    // endRow = maze.length;
+    // endColumn = maze[0].length;
+    endRow = 0;
+    endColumn = 1;
     emit(IntializeMazeState());
   }
 
@@ -84,34 +86,58 @@ class MazeCubit extends Cubit<MazeState> {
     }
   }
 
+  // to change the start and end point you need to return the old end and start to the normal state
+  // ensure that both row and column fields are valid
+  void changeStart(){
+    //check not null and not exceed the maze size
+    if(SR != null && SC != null){
+      if(SR < maze.length && SC < maze[0].length) {
+        startRow = SR;
+        startColumn = SC;
+        emit(StartState());
+      }
+    }
+  }
+  void changeEnd() {
+    if (ER != null && EC != null) {
+      if (ER < maze.length && EC < maze[0].length) {
+        endRow = ER;
+        endColumn = EC;
+        emit(EndState());
+      }
+    }
+  }
+
   //to change the maze start point
   void changeStartRow(value) {
-    start[0] = int.tryParse(value) ?? 1;
+    SR = int.tryParse(value) ?? 0;
     emit(StartCellRowState());
+    changeStart();
   }
 
   void changeStartColumn(value) {
-    start[1] = int.tryParse(value) ?? 1;
+    SC = int.tryParse(value) ?? 0;
     emit(StartCellColumnState());
+    changeStart();
   }
 
   //to change the maze end point
   void changeEndRow(value) {
-    end[0] = int.tryParse(value) ?? 1;
+    ER = int.tryParse(value) ?? 0;
     emit(EndCellRowState());
+    changeEnd();
   }
 
   void changeEndColumn(value) {
-    end[1] = int.tryParse(value) ?? 1;
+    EC = int.tryParse(value) ?? 1;
     emit(EndCellColumnState());
+    changeEnd();
   }
 
   //toggle the cell between (white and black) color when the
   void changeOnCellClick() {
     emit(OnCellClickState());
   }
-
-  // Existing code...
 
   void toggleCell(int row, int col) {
     if (maze[row][col] == 0) {
@@ -121,4 +147,12 @@ class MazeCubit extends Cubit<MazeState> {
     }
     emit(CellToggledState());
   }
+
+  //============================= solve by BFS ==================
+  void search_BFS(){
+
+  }
+  //============================= solve by DFS ==================
+
+  //============================= solve by A* ==================
 }
