@@ -44,7 +44,7 @@ class MazeCubit extends Cubit<MazeState> {
      emit(ModeState());
   }
   void changeRow(value){
-    x = int.tryParse(value) ?? 0;
+    x = int.tryParse(value) ?? 1;
     if (x != null && y != null) {
       maze = List.generate(x!, (index) => List.filled(y!, 0));
       emit(RowState());
@@ -54,7 +54,7 @@ class MazeCubit extends Cubit<MazeState> {
     }
   }
   void changeColumn(value){
-    y = int.tryParse(value) ?? 0;
+    y = int.tryParse(value) ?? 1;
     if (x != null && y != null) {
       maze = List.generate(x!, (index) => List.filled(y!, 0));
       emit(ColumnState());
@@ -65,20 +65,20 @@ class MazeCubit extends Cubit<MazeState> {
   }
   //to change the maze start point
   void changeStartRow(value){
-    start[0] = int.tryParse(value) ?? 0;
+    start[0] = int.tryParse(value) ?? 1;
     emit(StartCellRowState());
   }
   void changeStartColumn(value){
-    start[1] = int.tryParse(value) ?? 0;
+    start[1] = int.tryParse(value) ?? 1;
     emit(StartCellColumnState());
   }
   //to change the maze end point
   void changeEndRow(value){
-    end[0] = int.tryParse(value) ?? 0;
+    end[0] = int.tryParse(value) ?? 1;
     emit(EndCellRowState());
   }
   void changeEndColumn(value){
-    end[1] = int.tryParse(value) ?? 0;
+    end[1] = int.tryParse(value) ?? 1;
     emit(EndCellColumnState());
   }
   //toggle the cell between (white and black) color when the

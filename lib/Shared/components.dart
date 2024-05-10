@@ -1,13 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 Widget _buildCell(int value) {
-  Color color = value == 1 ? Colors.black : Colors.white;
+  // assign 0 -> space , 1 => border ,7 => start , 10 => end
+  Color color = Colors.white;
+  set_color_for_the_cell(color: color , value: value);
   return Container(
     margin: EdgeInsets.all(1),
     color: color,
   );
+}
+
+void set_color_for_the_cell({value, color}){
+  if(value == 1) {
+    color =  Colors.black;
+  } else if (value==0) {
+    color = Colors.white;
+  } else if(value == 7) {
+    color = Colors.blueAccent;
+  } else if (value == 10) {
+    color = Colors.red;
+  }
 }
 
 Widget algorithmDropdown(
@@ -28,19 +41,6 @@ Widget algorithmDropdown(
   );
 }
 
-// Widget defaultField(
-//     {required ValueChanged function, required text, required controllers}) {
-//   return Expanded(
-//       child: Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: TextFormField(
-//       controller: controllers,
-//       keyboardType: TextInputType.number,
-//       onFieldSubmitted: function,
-//       decoration: InputDecoration(hintText: "$text"),
-//     ),
-//   ));
-// }
 Widget defaultField(
     {required ValueChanged function, required String text, required TextEditingController controllers }) {
   return Expanded(
@@ -56,23 +56,32 @@ Widget defaultField(
 }
 
 
-Widget matrix_builder({required List<List<int>> maze , required context, required selectedMode}) {
+Widget matrix_builder({required List<List<int>> maze , required context, required selectedMode , required startCol ,
+  required startRow ,  required endCol , required endRow ,
+}) {
   return Expanded(
     child: GestureDetector(
       onTapUp: (details) {
         // Calculate the tapped cell
         double cellWidth = MediaQuery.of(context).size.width / maze[0].length;
-        double cellHeight =
-            (MediaQuery.of(context).size.height - 120) / maze.length;
+        double cellHeight = (MediaQuery.of(context).size.height - 120) / maze.length;
         int row = (details.localPosition.dy / cellHeight).floor();
         int col = (details.localPosition.dx / cellWidth).floor();
 
         // Update maze based on selected mode
-          if (selectedMode == "Creation Mode") {
-            if (maze[row][col] == 0) {
+          if (selectedMode == "Creation Mode" ) {
+            if (maze[row][col] == 0 || row != startRow  || col != startCol || row != endRow  || col != endCol) {
               maze[row][col] = 1; // Set barrier
-            } else {
-              maze[row][col] = 0; // Remove barrier
+              print(maze.toString());
+            } else  if (maze[row][col] == 1 || row != startRow  || col != startCol || row != endRow  || col != endCol) {
+              maze[row][col] = 0; // Set space
+              print(maze.toString());
+            }else  if (row == startRow  || col == startCol || row != endRow  || col != endCol) {
+              maze[row][col] = 7; //  // set to start by number 7
+              print(maze.toString());
+            }else  if (row != startRow  || col != startCol || row == endRow  || col == endCol) {
+              maze[row][col] = 10; //  // set to start by number 10
+              print(maze.toString());
             }
           }
       },

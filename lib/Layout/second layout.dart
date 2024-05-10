@@ -109,7 +109,7 @@ class HomeLayout2 extends StatelessWidget {
                     ),
                   ),
                 ),
-                matrix_builder(maze: cubit.maze, context: context, selectedMode: cubit.selectedMode),
+                matrix_builder(maze: cubit.maze, context: context, selectedMode: cubit.selectedMode ,startCol: cubit.startColumnControllers  ),
               ],
             ),
           );
