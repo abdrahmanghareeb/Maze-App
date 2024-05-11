@@ -3,6 +3,7 @@ import 'package:ai_maze_project/Ai%20Algorithms/DFS.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../Ai Algorithms/A star.dart';
 import '../Ai Algorithms/BFS__.dart';
 
 part 'maze_state.dart';
@@ -13,7 +14,7 @@ class MazeCubit extends Cubit<MazeState> {
   static MazeCubit get(context) => BlocProvider.of(context);
 
   //lists and selected for the drop down menu's
-  var algorithmsList = [ "choose an algorithm ","BFS", "DFS", "A*"];
+  var algorithmsList = ["choose an algorithm ", "BFS", "DFS", "A*"];
   var modeList = ["Creation Mode", "Simulation Mode"];
   var selectedAlgorithm = "";
   var selectedMode = "";
@@ -43,7 +44,7 @@ class MazeCubit extends Cubit<MazeState> {
   // Lists of solutions
   List<dynamic> BFS_List = [];
   Iterable<List<int>> DFS_List = [];
-  Iterable<List<int>> A_star_List = [];
+  List<List<int>> A_star_List = [];
 
   //the maze matrix
   var maze;
@@ -65,15 +66,18 @@ class MazeCubit extends Cubit<MazeState> {
     if (selectedAlgorithm == "BFS") {
       await search_BFS(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(BFS_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(
+          BFS_List); // iterate on solution and assign the maze items maze by 15
     } else if (selectedAlgorithm == "DFS") {
       await search_DFS(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(DFS_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(
+          DFS_List); // iterate on solution and assign the maze items maze by 15
     } else if (selectedAlgorithm == "A*") {
-      // await search_A_star(); // FIND SOLUTION
+      await search_A_Star(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(A_star_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(
+          A_star_List); // iterate on solution and assign the maze items maze by 15
     }
     emit(AlgorithmsState());
   }
@@ -83,7 +87,7 @@ class MazeCubit extends Cubit<MazeState> {
     eraseOldSearchPath(maze);
     if (selectedMode == "Simulation Mode") {
       changeAlgorithm(selectedAlgorithm);
-    }else{
+    } else {
       selectedAlgorithm = algorithmsList.first;
     }
     emit(ModeState());
@@ -108,8 +112,9 @@ class MazeCubit extends Cubit<MazeState> {
       } else {
         intializeTheMaze();
         emit(RowErrorState());
-      }}catch(e){
-        print(e.toString());
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 
@@ -217,19 +222,30 @@ class MazeCubit extends Cubit<MazeState> {
   //============================= solve by BFS ==================
   Future<void> search_BFS() async {
     // BFS_List = solveMaze(start:  Point(startRow, startColumn), end: Point(endRow, endColumn), maze: maze);
-    BFS_List = solveByBFS(start:  [startRow, startColumn], end: [endRow, endColumn], maze: maze);
+    BFS_List = solveByBFS(
+        start: [startRow, startColumn], end: [endRow, endColumn], maze: maze);
     print("path : ${BFS_List}");
     emit(search_State());
   }
 
   //============================= solve by DFS ==================
   Future<void> search_DFS() async {
-    DFS_List = await solveMazeDFS(startPoint: [startRow, startColumn], endPoint: [endRow, endColumn], maze: maze);
+    DFS_List = await solveMazeDFS(
+        startPoint: [startRow, startColumn],
+        endPoint: [endRow, endColumn],
+        maze: maze);
     print("path : ${DFS_List}");
     emit(search_State());
   }
   //============================= solve by A* ==================
-  void search_A_star() {
+
+  Future<void> search_A_Star() async {
+    A_star_List = await aStarSearch(
+        startPoint: [startRow, startColumn],
+        endPoint: [endRow, endColumn],
+        maze: maze);
+    print("path : ${A_star_List}");
     emit(search_State());
   }
+
 }

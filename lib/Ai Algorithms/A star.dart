@@ -1,22 +1,20 @@
-import 'dart:math';
-
 class Node {
-  int row;
-  int col;
-  int f =0 ;
-  int g= 0;
-  int h= 0;
-  late  Node? parent;
-  Node(this.row, this.col , {required this.parent});
+  final int row;
+  final int col;
+  int f = 0;
+  int g = 0;
+  int h = 0;
+  Node? parent;
+
+  Node(this.row, this.col, {required this.parent});
+
   @override
   String toString() {
     return '[$row, $col]';
   }
 }
-
-
-
-List<List<int>> aStarSearch(List<List<int>> maze, List<int> startPoint, List<int> endPoint) {
+List<List<int>> aStarSearch(
+    {required List<List<int>> maze,required List<int> startPoint,required List<int> endPoint}) {
   int rows = maze.length;
   int cols = maze[0].length;
 
@@ -29,7 +27,7 @@ List<List<int>> aStarSearch(List<List<int>> maze, List<int> startPoint, List<int
   int endCol = endPoint[1];
 
   Node startNode = nodes[startRow][startCol];
-  Node endNode = nodes[endRow][endCol];
+  // Node endNode = nodes[endRow][endCol];
 
   List<Node> openList = [startNode];
 
@@ -48,7 +46,7 @@ List<List<int>> aStarSearch(List<List<int>> maze, List<int> startPoint, List<int
     openList.remove(currentNode);
     closedList[currentNode.row][currentNode.col] = true;
 
-    List<Node> neighbors = getNeighbors(currentNode, nodes, maze, rows, cols);
+    List<Node> neighbors = get_Neighbors(currentNode, nodes, maze, rows, cols);
 
     for (Node neighbor in neighbors) {
       if (closedList[neighbor.row][neighbor.col]) {
@@ -60,7 +58,8 @@ List<List<int>> aStarSearch(List<List<int>> maze, List<int> startPoint, List<int
       if (!openList.contains(neighbor) || tentativeGScore < neighbor.g) {
         neighbor.parent = currentNode;
         neighbor.g = tentativeGScore;
-        neighbor.h = (neighbor.row - endRow).abs() + (neighbor.col - endCol).abs();
+        neighbor.h =
+            (neighbor.row - endRow).abs() + (neighbor.col - endCol).abs();
         neighbor.f = neighbor.g + neighbor.h;
 
         if (!openList.contains(neighbor)) {
@@ -73,7 +72,7 @@ List<List<int>> aStarSearch(List<List<int>> maze, List<int> startPoint, List<int
   return [];
 }
 
-List<Node> getNeighbors(Node node, List<List<Node>> nodes, List<List<int>> maze, int rows, int cols) {
+List<Node> get_Neighbors(Node node, List<List<Node>> nodes, List<List<int>> maze, int rows, int cols) {
   List<Node> neighbors = [];
   int row = node.row;
   int col = node.col;
@@ -94,34 +93,35 @@ List<Node> getNeighbors(Node node, List<List<Node>> nodes, List<List<int>> maze,
   return neighbors;
 }
 
-List<List<int>> reconstructPath(Node node) {
+List<List<int>> reconstructPath(Node? node) {
   List<List<int>> path = [];
   while (node != null) {
     path.insert(0, [node.row, node.col]);
-    node = node.parent!;
+    node = node.parent;
   }
   return path;
 }
 
 void main() {
   List<List<int>> maze = [
-    [0, 1, 0, 0, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 0, 1, 0],
-    [1, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0]
+    [0, 1, 0, 0, 0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 0, 1, 0, 0, 0],
+    [1, 1, 1, 1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0]
   ];
 
-  List<int> startPoint = [0, 0];
-  List<int> endPoint = [4, 4];
+  List<int> startPoint = [0, 3];
+  List<int> endPoint = [4, 7];
 
-  List<List<int>> path = aStarSearch(maze, startPoint, endPoint);
+  List<List<int>> path = aStarSearch(maze: maze,startPoint: startPoint,endPoint: endPoint);
   if (path.isEmpty) {
     print("No path found!");
   } else {
     print("Path found:");
-    for (var point in path) {
-      print(point);
-    }
+    print(path);
+    // for (var point in path) {
+    //   print(point);
+    // }
   }
 }
