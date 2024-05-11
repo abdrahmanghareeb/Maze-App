@@ -58,50 +58,9 @@ Widget defaultField(
   ));
 }
 
-// Widget matrix_builder({required List<List<int>> maze, required context}) {
-//   var cubit = MazeCubit.get(context);
-//   return Expanded(
-//     child: GestureDetector(
-//       onTapUp: (details) {
-//         // Calculate the tapped cell
-//         double cellWidth = MediaQuery.of(context).size.width / maze[0].length;
-//         double cellHeight =
-//             (MediaQuery.of(context).size.height - 120) / maze.length;
-//
-//         // Calculate column index based on tap position
-//         int col = (details.localPosition.dx / cellWidth).floor();
-//
-//         // Calculate row index based on tap position
-//         int row = (details.localPosition.dy / cellHeight).floor();
-//
-//         // Toggle the cell color (0 -> 1, 1 -> 0)
-//         cubit.toggleCell(row, col);
-//       },
-//       child: Stack(
-//         children: [
-//           Container(color: Colors.black12),
-//           Padding(
-//             padding: const EdgeInsets.all(20.0),
-//             child: GridView.builder(
-//               itemCount: maze.length * maze[0].length,
-//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                 crossAxisCount: maze[0].length,
-//               ),
-//               itemBuilder: (BuildContext context, int index) {
-//                 int row = index ~/ maze[0].length;
-//                 int col = index % maze[0].length;
-//                 return _buildCell(value: maze[row][col]);
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
 
-Widget matrix_builder({required List<List<int>> maze, required context ,required startCol ,
-  required endCol, required endRow , required startRow, required String selectedMode
+Widget matrix_builder({required List<List<int>> maze, required context ,required  int startCol ,
+  required int endCol, required int endRow , required int startRow, required String selectedMode
 }) {
   //iterate on the whole maze turn all the 7s and 10s to 0
   for (int i = 0; i < maze.length; i++) {
@@ -111,9 +70,14 @@ Widget matrix_builder({required List<List<int>> maze, required context ,required
       }
     }
   }
-  //set the new start and end
-  maze[startRow][startCol] = 7;
-  maze[endRow][endCol] = 10;
+  // Set the new start and end positions
+  //important to chack the range first
+  if (startRow >= 0 && startRow < maze.length && startCol >= 0 && startCol < maze[0].length) {
+    maze[startRow][startCol] = 7;
+  }
+  if (endRow >= 0 && endRow < maze.length && endCol >= 0 && endCol < maze[0].length) {
+    maze[endRow][endCol] = 10;
+  }
   return Expanded(
     child: Stack(
       children: [
@@ -149,3 +113,66 @@ Widget matrix_builder({required List<List<int>> maze, required context ,required
     ),
   );
 }
+
+// Widget matrix_builder({
+//   required List<List<int>> maze,
+//   required context,
+//   required int startCol,
+//   required int endCol,
+//   required int endRow,
+//   required int startRow,
+//   required String selectedMode
+// }) {
+//   // Iterate over the whole maze and turn all the 7s and 10s to 0
+//   for (int i = 0; i < maze.length; i++) {
+//     for (int j = 0; j < maze[i].length; j++) {
+//       if (maze[i][j] == 7 || maze[i][j] == 10) {
+//         maze[i][j] = 0;
+//       }
+//     }
+//   }
+//   // Set the new start and end positions
+//   if (startRow >= 0 && startRow < maze.length && startCol >= 0 && startCol < maze[0].length) {
+//     maze[startRow][startCol] = 7;
+//   }
+//   if (endRow >= 0 && endRow < maze.length && endCol >= 0 && endCol < maze[0].length) {
+//     maze[endRow][endCol] = 10;
+//   }
+//
+//   return Expanded(
+//     child: Stack(
+//       children: [
+//         Container(color: Colors.brown),
+//         Padding(
+//           padding: const EdgeInsets.all(20.0),
+//           child: GridView.builder(
+//             itemCount: maze.length * maze[0].length,
+//             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//               crossAxisCount: maze[0].length,
+//             ),
+//             itemBuilder: (BuildContext context, int index) {
+//               int row = index ~/ maze[0].length;
+//               int col = index % maze[0].length;
+//               var cubit = MazeCubit.get(context);
+//               return InkWell(
+//                 onTap: () {
+//                   if (selectedMode == "Creation Mode") {
+//                     if (maze[row][col] == 1) {
+//                       maze[row][col] = 0;
+//                     } else if (maze[row][col] == 0) {
+//                       maze[row][col] = 1;
+//                     }
+//                     cubit.changeOnCellClick();
+//                     print(maze.toString());
+//                   }
+//                 },
+//                 child: _buildCell(value: maze[row][col]),
+//               );
+//             },
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
