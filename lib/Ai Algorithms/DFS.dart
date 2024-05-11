@@ -1,68 +1,64 @@
-// void main() {
-//   List<List<int>> maze = [
-//     [0, 1, 1, 0, 0],
-//     [0, 1, 0, 1, 0],
-//     [0, 0, 0, 1, 0],
-//     [0, 1, 0, 0, 0],
-//     [0, 0, 0, 0, 0]
-//   ];
-//   List<int> start = [0, 0];
-//   List<int> end = [4, 4];
-//
-//   List<List<int>> solveByDFS(List<int> start, List<int> end, List<List<int>> maze) {
-//     List<List<int>> visited = List.generate(maze.length, (index) => List.filled(maze[0].length, 0));
-//     Map<List<int>, List<int>> parent = {};
-//     List<List<int>> moves = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-//
-//     bool isValidMove(int row, int col) {
-//       return (row >= 0 &&
-//           row < maze.length &&
-//           col >= 0 &&
-//           col < maze[0].length &&
-//           maze[row][col] == 0 &&
-//           visited[row][col] == 0);
-//     }
-//
-//     List<List<int>> dfs(List<int> current) {
-//       List<List<int>> stack = [current];
-//
-//       while (stack.isNotEmpty) {
-//         current = stack.removeLast();
-//         visited[current[0]][current[1]] = 1;
-//
-//         if (current[0] == end[0] && current[1] == end[1]) {
-//           List<List<int>> path = [];
-//           while (current[0] != start[0] || current[1] != start[1]) {
-//             path.add(current);
-//             current = parent[current]!;
-//           }
-//           path.add(start);
-//           var path1 = path.reversed;
-//           print("Path found: ${path1}");
-//           // print("Path found: ${path[0]}");
-//           // print("Path found: ${path[0][0]}");
-//           // print("Path found: ${path[0][1]}");
-//           // print("Path found: ${path.length}");
-//           // print("Path found: ${path[path.length - 1][0]}");
-//           return;
-//         }
-//
-//         for (var move in moves) {
-//           int newRow = current[0] + move[0];
-//           int newCol = current[1] + move[1];
-//           if (isValidMove(newRow, newCol)) {
-//             List<int> neighbor = [newRow, newCol];
-//             stack.add(neighbor);
-//             parent[neighbor] = current;
-//           }
-//         }
-//       }
-//       print("No path found.");
-//     }
-//
-//     dfs(start);
-//     return dfs(start, end, maze);
-//   }
-//
-//   solveByDFS(start, end, maze);
-// }
+List<List<int>> maze = [
+  [0, 1, 0, 0, 0],
+  [0, 1, 0, 1, 0],
+  [0, 0, 0, 1, 0],
+  [0, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0]
+];
+
+List<int> startPoint = [2, 2];
+List<int> endPoint = [4, 4];
+
+
+void main() {
+
+  List<List<int>> path = solveMazeDFS(maze: maze,startPoint:startPoint,endPoint: endPoint);
+  if (path.isEmpty) {
+    print("No path found!");
+  } else {
+    print("Path found:");
+    for (var point in path) {
+      print(point);
+    }
+  }
+}
+
+List<List<int>> solveMazeDFS(
+    {required List<List<int>> maze,required List<int> startPoint,required List<int> endPoint}) {
+  int rows = maze.length;
+  int cols = maze[0].length;
+
+  List<List<bool>> visited = List.generate(rows, (_) => List.filled(cols, false));
+
+  List<List<int>> path = [];
+  dfs(maze, startPoint[0], startPoint[1], endPoint[0], endPoint[1], visited, path);
+
+  return path;
+}
+
+bool dfs(List<List<int>> maze, int i, int j, int endRow, int endCol,
+    List<List<bool>> visited, List<List<int>> path) {
+  if (i < 0 || i >= maze.length || j < 0 || j >= maze[0].length ||
+      maze[i][j] == 1 || visited[i][j]) {
+    return false;
+  }
+
+  path.add([i, j]);
+  visited[i][j] = true;
+
+  if (i == endRow && j == endCol) {
+    return true;
+  }
+
+  // Explore in all four directions (up, down, left, right)
+  if (dfs(maze, i + 1, j, endRow, endCol, visited, path) ||
+      dfs(maze, i - 1, j, endRow, endCol, visited, path) ||
+      dfs(maze, i, j + 1, endRow, endCol, visited, path) ||
+      dfs(maze, i, j - 1, endRow, endCol, visited, path)) {
+    return true;
+  }
+
+  // If no path is found, backtrack
+  path.removeLast();
+  return false;
+}

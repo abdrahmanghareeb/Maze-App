@@ -26,6 +26,7 @@ final class OnCellClickState extends MazeState {}
 final class CellToggledState extends MazeState {}
 
 final class search_State extends MazeState {}
+final class changeMazeValues_State extends MazeState {}
 
 
 

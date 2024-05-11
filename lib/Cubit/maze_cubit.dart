@@ -1,6 +1,9 @@
 import 'package:ai_maze_project/Ai%20Algorithms/BFS.dart';
+import 'package:ai_maze_project/Ai%20Algorithms/DFS.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../Ai Algorithms/BFS__.dart';
 
 part 'maze_state.dart';
 
@@ -10,7 +13,7 @@ class MazeCubit extends Cubit<MazeState> {
   static MazeCubit get(context) => BlocProvider.of(context);
 
   //lists and selected for the drop down menu's
-  var algorithmsList = ["BFS", "DFS", "A*"];
+  var algorithmsList = [ "choose an algorithm ","BFS", "DFS", "A*"];
   var modeList = ["Creation Mode", "Simulation Mode"];
   var selectedAlgorithm = "";
   var selectedMode = "";
@@ -38,7 +41,7 @@ class MazeCubit extends Cubit<MazeState> {
   var EC;
 
   // Lists of solutions
-  Iterable<List<int>> BFS_List = [];
+  List<dynamic> BFS_List = [];
   Iterable<List<int>> DFS_List = [];
   Iterable<List<int>> A_star_List = [];
 
@@ -56,24 +59,21 @@ class MazeCubit extends Cubit<MazeState> {
     emit(IntializeMazeState());
   }
 
-  void changeAlgorithm(value) {
+  Future<void> changeAlgorithm(value) async {
     selectedAlgorithm = value;
 
     if (selectedAlgorithm == "BFS") {
-      search_BFS(); // FIND SOLUTION
+      await search_BFS(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(
-          BFS_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(BFS_List); // iterate on solution and assign the maze items maze by 15
     } else if (selectedAlgorithm == "DFS") {
-      search_DFS(); // FIND SOLUTION
+      await search_DFS(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(
-          DFS_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(DFS_List); // iterate on solution and assign the maze items maze by 15
     } else if (selectedAlgorithm == "A*") {
-      search_A_star(); // FIND SOLUTION
+      // await search_A_star(); // FIND SOLUTION
       eraseOldSearchPath(maze); // Erase all the 15 numbers in the maze first
-      changeMazeValues(
-          A_star_List); // iterate on solution and assign the maze items maze by 15
+      changeMazeValues(A_star_List); // iterate on solution and assign the maze items maze by 15
     }
     emit(AlgorithmsState());
   }
@@ -83,6 +83,8 @@ class MazeCubit extends Cubit<MazeState> {
     eraseOldSearchPath(maze);
     if (selectedMode == "Simulation Mode") {
       changeAlgorithm(selectedAlgorithm);
+    }else{
+      selectedAlgorithm = algorithmsList.first;
     }
     emit(ModeState());
   }
@@ -126,31 +128,6 @@ class MazeCubit extends Cubit<MazeState> {
       emit(ColumnErrorState());
     }
   }
-
-  // void changeColumn(value) {
-  //   try {
-  //     y = int.tryParse(value) ?? 1;
-  //     //
-  //     if (x != null && y != null) {
-  //       if (x! > 0 && y! > 0 && x! < maze.length && y! < maze[0].length) {
-  //         maze = List.generate(x!, (index) => List.filled(y!, 0));
-  //         startRow = 0; // start point (0,0)
-  //         startColumn = 0;
-  //         endRow = 0; // end point (0,0)
-  //         endColumn = 1;
-  //         emit(ColumnState());
-  //       } else {
-  //         intializeTheMaze();
-  //         emit(ColumnErrorState());
-  //       }
-  //     } else {
-  //       intializeTheMaze();
-  //       emit(ColumnErrorState());
-  //     }
-  //   }catch(e){
-  //     print(e.toString());
-  //   }
-  // }
 
   // to change the start and end point you need to return the old end and start to the normal state
   // ensure that both row and column fields are valid
@@ -233,22 +210,24 @@ class MazeCubit extends Cubit<MazeState> {
           maze[row][col] = 15;
         }
       }
+      emit(changeMazeValues_State());
     }
   }
 
   //============================= solve by BFS ==================
-  void search_BFS() {
-    BFS_List = solveByBFS(
-        start: [startRow, startColumn], end: [endRow, endColumn], maze: maze);
+  Future<void> search_BFS() async {
+    // BFS_List = solveMaze(start:  Point(startRow, startColumn), end: Point(endRow, endColumn), maze: maze);
+    BFS_List = solveByBFS(start:  [startRow, startColumn], end: [endRow, endColumn], maze: maze);
     print("path : ${BFS_List}");
     emit(search_State());
   }
 
   //============================= solve by DFS ==================
-  void search_DFS() {
+  Future<void> search_DFS() async {
+    DFS_List = await solveMazeDFS(startPoint: [startRow, startColumn], endPoint: [endRow, endColumn], maze: maze);
+    print("path : ${DFS_List}");
     emit(search_State());
   }
-
   //============================= solve by A* ==================
   void search_A_star() {
     emit(search_State());
