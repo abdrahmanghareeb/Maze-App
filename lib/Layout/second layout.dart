@@ -42,6 +42,7 @@ class HomeLayout2 extends StatelessWidget {
                           selectedItem: cubit.selectedMode,
                           list: cubit.modeList,
                           function: (value) {
+
                               cubit.changeMode(value);
                           },
                         ),
