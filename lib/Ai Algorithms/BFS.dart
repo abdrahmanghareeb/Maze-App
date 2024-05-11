@@ -1,22 +1,25 @@
 import 'dart:collection';
 
-// List<List<int>> maze = [
-//   [0, 1, 0, 0, 0],
-//   [0, 1, 0, 1, 0],
-//   [0, 0, 0, 0, 0],
-//   [0, 1, 1, 1, 0],
-//   [0, 0, 0, 0, 0]
-// ];
-// List<int> start = [2, 3];
-// List<int> end = [4, 4];
+List<List<int>> maze = [
+  [0, 1, 0, 0, 0],
+  [0, 1, 0, 1, 0],
+  [0, 0, 0, 0, 0],
+  [0, 1, 1, 1, 0],
+  [0, 0, 0, 0, 0]
+];
+List<int> start = [2, 3];
+List<int> end = [4, 4];
 
-Iterable<List<int>> solveByBFS(
+List solveByBFS(
     {required List<int> start, required List<int> end,required List<List<int>> maze}) {
+
   Iterable<List<int>> result = [];
+
   if ((start[0] >= 0 && start[0] < maze.length && start[1] >= 0 &&
       start[1] < maze[0].length && maze[start[0]][start[1]] != 1) ||
       (end[0] >= 0 && end[0] < maze.length && end[1] >= 0 &&
           end[1] < maze[0].length && maze[end[0]][end[1]] != 1)) {
+
     Set<List<int>> visited = {};
     Map<List<int>, List<int>> parent = {};
     List<List<int>> moves = [ [0, 1], [0, -1], [1, 0], [-1, 0]];
@@ -34,7 +37,7 @@ Iterable<List<int>> solveByBFS(
       return neighbors;
     }
 
-    Iterable<List<int>> bfs(List<int> start, List<int> end) {
+    List bfs(List<int> start, List<int> end) {
       Queue<List<int>> queue = Queue();
       queue.add(start);
 
@@ -62,7 +65,7 @@ Iterable<List<int>> solveByBFS(
         }
       }
       print("No path found.");
-      return result;
+      return [];
     }
     return bfs(start, end);
   } else {
@@ -71,6 +74,6 @@ Iterable<List<int>> solveByBFS(
   }
 }
 
-// void main () {
-//   print(solveByBFS(start: start , maze: maze , end: end));
-// }
+void main () async {
+   solveByBFS(start: start , maze: maze , end: end);
+}

@@ -26,19 +26,17 @@ Widget algorithmDropdown(
     {required ValueChanged function,
     required selectedItem,
     required List<String> list}) {
-  return Expanded(
-    child: DropdownButton<String>(
-      value: selectedItem,
-      onChanged: (String? value) {
-        function(value);
-      },
-      items: list.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    ),
+  return DropdownButton<String>(
+    value: selectedItem,
+    onChanged: (String? value) {
+      function(value);
+    },
+    items: list.map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value , overflow: TextOverflow.ellipsis,),
+      );
+    }).toList(),
   );
 }
 
