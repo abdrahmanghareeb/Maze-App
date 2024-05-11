@@ -10,8 +10,9 @@ import 'dart:collection';
 // List<int> start = [2, 3];
 // List<int> end = [4, 4];
 
-List<List<int>> solveByBFS(List<int> start, List<int> end,
-    List<List<int>> maze) {
+Iterable<List<int>> solveByBFS(
+    {required List<int> start, required List<int> end,required List<List<int>> maze}) {
+  Iterable<List<int>> result = [];
   if ((start[0] >= 0 && start[0] < maze.length && start[1] >= 0 &&
       start[1] < maze[0].length && maze[start[0]][start[1]] != 1) ||
       (end[0] >= 0 && end[0] < maze.length && end[1] >= 0 &&
@@ -33,7 +34,7 @@ List<List<int>> solveByBFS(List<int> start, List<int> end,
       return neighbors;
     }
 
-    List<List<int>> bfs(List<int> start, List<int> end) {
+    Iterable<List<int>> bfs(List<int> start, List<int> end) {
       Queue<List<int>> queue = Queue();
       queue.add(start);
 
@@ -48,7 +49,8 @@ List<List<int>> solveByBFS(List<int> start, List<int> end,
             current = parent[current]!;
           }
           path.add(start);
-          print("Path found: ${path.reversed}");
+          result = path.reversed ;
+          print("Path found: ${result}");
           return path.reversed.toList();
         }
 
@@ -60,9 +62,8 @@ List<List<int>> solveByBFS(List<int> start, List<int> end,
         }
       }
       print("No path found.");
-      return [];
+      return result;
     }
-
     return bfs(start, end);
   } else {
     print("Not valid.");
@@ -70,4 +71,6 @@ List<List<int>> solveByBFS(List<int> start, List<int> end,
   }
 }
 
-// solveByBFS(start, end, maze);
+// void main () {
+//   print(solveByBFS(start: start , maze: maze , end: end));
+// }

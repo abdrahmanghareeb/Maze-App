@@ -13,6 +13,8 @@ Widget _buildCell({required int value}) {
     color = Colors.blueAccent;
   } else if (value == 10) {
     color = Colors.red;
+  }else if (value == 15) {
+    color = Colors.orange;
   }
   return Container(
     margin: EdgeInsets.all(1),
