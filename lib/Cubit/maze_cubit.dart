@@ -88,19 +88,26 @@ class MazeCubit extends Cubit<MazeState> {
   }
 
   void changeRow(value) {
-    x = int.tryParse(value) ?? 1;
-    //
-    if (x != null && y != null) {
-      if (x! > 0 && y! > 0) {
-        maze = List.generate(x!, (index) => List.filled(y!, 0));
-        emit(RowState());
+    try {
+      x = int.tryParse(value) ?? 1;
+      //
+      if (x != null && y != null) {
+        if (x! > 0 && y! > 0 && x! < maze.length && y! < maze[0].length) {
+          maze = List.generate(x!, (index) => List.filled(y!, 0));
+          startRow = 0; // start point (0,0)
+          startColumn = 0;
+          endRow = 0; // end point (0,0)
+          endColumn = 1;
+          emit(RowState());
+        } else {
+          intializeTheMaze();
+          emit(RowErrorState());
+        }
       } else {
         intializeTheMaze();
         emit(RowErrorState());
-      }
-    } else {
-      intializeTheMaze();
-      emit(RowErrorState());
+      }}catch(e){
+        print(e.toString());
     }
   }
 
@@ -112,13 +119,38 @@ class MazeCubit extends Cubit<MazeState> {
         emit(ColumnState());
       } else {
         intializeTheMaze();
-        emit(RowErrorState());
+        emit(ColumnErrorState());
       }
     } else {
       intializeTheMaze();
       emit(ColumnErrorState());
     }
   }
+
+  // void changeColumn(value) {
+  //   try {
+  //     y = int.tryParse(value) ?? 1;
+  //     //
+  //     if (x != null && y != null) {
+  //       if (x! > 0 && y! > 0 && x! < maze.length && y! < maze[0].length) {
+  //         maze = List.generate(x!, (index) => List.filled(y!, 0));
+  //         startRow = 0; // start point (0,0)
+  //         startColumn = 0;
+  //         endRow = 0; // end point (0,0)
+  //         endColumn = 1;
+  //         emit(ColumnState());
+  //       } else {
+  //         intializeTheMaze();
+  //         emit(ColumnErrorState());
+  //       }
+  //     } else {
+  //       intializeTheMaze();
+  //       emit(ColumnErrorState());
+  //     }
+  //   }catch(e){
+  //     print(e.toString());
+  //   }
+  // }
 
   // to change the start and end point you need to return the old end and start to the normal state
   // ensure that both row and column fields are valid
